@@ -21,10 +21,10 @@ class BCQLTrainConfig:
     epsilon: float = None
     density: float = 1.0
     # training params
-    task: str = "OfflineCarCircle-v0"
+    task: str = "OfflineCarCircle1Gymnasium-v0"
     dataset: str = None
     seed: int = 0
-    device: str = "cpu"
+    device: str = "cuda:0"
     threads: int = 4
     reward_scale: float = 0.1
     cost_scale: float = 1

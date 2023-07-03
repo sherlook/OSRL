@@ -37,7 +37,7 @@ class BCTrainConfig:
     a_hidden_sizes: List[float] = field(default=[256, 256], is_mutable=True)
     gamma: float = 1.0
     # evaluation params
-    eval_episodes: int = 10
+    eval_episodes: int = 100
     eval_every: int = 2500
 
 

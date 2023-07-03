@@ -21,7 +21,7 @@ class CPQTrainConfig:
     epsilon: float = None
     density: float = 1.0
     # training params
-    task: str = "OfflineCarCircle-v0"
+    task: str = "OfflineCarCircle1Gymnasium-v0"
     dataset: str = None
     seed: int = 0
     device: str = "cpu"

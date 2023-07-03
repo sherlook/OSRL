@@ -30,7 +30,7 @@ class CDTTrainConfig:
     embedding_dropout: float = 0.1
     time_emb: bool = True
     # training params
-    task: str = "OfflineCarCircle-v0"
+    task: str = "OfflineCarCircle1Gymnasium-v0"
     dataset: str = None
     learning_rate: float = 1e-4
     betas: Tuple[float, float] = (0.9, 0.999)
@@ -50,7 +50,7 @@ class CDTTrainConfig:
     eval_every: int = 2500
     # general params
     seed: int = 0
-    device: str = "cuda:2"
+    device: str = "cuda:0"
     threads: int = 6
     # augmentation param
     deg: int = 4

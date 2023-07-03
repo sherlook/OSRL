@@ -137,8 +137,18 @@ class BCQL(nn.Module):
             batch_size = next_observations.shape[0]
             obs_next = torch.repeat_interleave(next_observations, self.sample_action_num,
                                                0).to(self.device)
+            loss_vae = self.vae.vae_loss(observations, actions)
 
-            act_targ_next = self.actor_old(obs_next, self.vae.decode(obs_next))
+
+            if loss_vae <= 0.065:
+                act_targ_next = self.actor_old(obs_next, self.vae.decode(obs_next))
+            else:
+                act_targ_next = self.actor_old(obs_next, torch.repeat_interleave(actions,
+                                                        repeats=self.sample_action_num, dim=0).to(self.device))
+
+            # act_targ_next = self.actor_old(obs_next, self.vae.decode(obs_next))
+
+
             q1_targ, q2_targ, _, _ = self.critic_old.predict(obs_next, act_targ_next)
 
             q_targ = self.lmbda * torch.min(
@@ -146,6 +156,8 @@ class BCQL(nn.Module):
             q_targ = q_targ.reshape(batch_size, -1).max(1)[0]
 
             backup = rewards + self.gamma * (1 - done) * q_targ
+
+
         loss_critic = self.critic.loss(backup, q1_list) + self.critic.loss(
             backup, q2_list)
         self.critic_optim.zero_grad()

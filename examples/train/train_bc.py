@@ -42,10 +42,13 @@ def train(args: BCTrainConfig):
     # # logger = TensorboardLogger(args.logdir, log_txt=True, name=args.name)
     logger.save_config(cfg, verbose=args.verbose)
 
+
+
     # the cost scale is down in trainer rollout
     env = gym.make(args.task)
     data = env.get_dataset()
     env.set_target_cost(args.cost_limit)
+    print("*******************")
 
     cbins, rbins, max_npb, min_npb = None, None, None, None
     if args.density != 1.0:
@@ -66,7 +69,7 @@ def train(args: BCTrainConfig):
                                 min_npb=min_npb)
 
     process_bc_dataset(data, args.cost_limit, args.gamma, args.bc_mode)
-
+    print("*******************")
     # model & optimizer & scheduler setup
     state_dim = env.observation_space.shape[0]
     if args.bc_mode == "multi-task":
@@ -81,11 +84,12 @@ def train(args: BCTrainConfig):
     )
     print(f"Total parameters: {sum(p.numel() for p in model.parameters())}")
 
+
     def checkpoint_fn():
         return {"model_state": model.state_dict()}
 
     logger.setup_checkpoint_fn(checkpoint_fn)
-
+    print("trainer")
     trainer = BCTrainer(model,
                         env,
                         logger=logger,
@@ -108,6 +112,7 @@ def train(args: BCTrainConfig):
     best_idx = 0
 
     for step in trange(args.update_steps, desc="Training"):
+        print(step)
         batch = next(trainloader_iter)
         observations, _, actions, _, _, _ = [b.to(args.device) for b in batch]
         trainer.train_one_step(observations, actions)

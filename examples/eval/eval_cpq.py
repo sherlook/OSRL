@@ -15,7 +15,7 @@ from osrl.common.exp_util import load_config_and_model, seed_all
 
 @dataclass
 class EvalConfig:
-    path: str = "log/.../checkpoint/model.pt"
+    path: str = "D:\Code\Python\OSRL\examples\\train\logs\OfflineCarCircle1Gymnasium-v0-cost-10\CPQ_episode_len300-361e\CPQ_episode_len300-361e"
     noise_scale: List[float] = None
     eval_episodes: int = 20
     best: bool = False

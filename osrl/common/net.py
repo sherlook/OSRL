@@ -29,6 +29,25 @@ def mlp(sizes, activation, output_activation=nn.Identity):
         layers += [layer, act()]
     return nn.Sequential(*layers)
 
+class MLPQsaNet(nn.Module):
+    """
+    A mlp critic net
+    Q(s, a) Net， Critic Net
+
+    Input:
+        obs: Observation of enverionments
+        act: action
+    Output:
+        q(s, a)
+    """
+    def __init__(self, obs_dim, act_dim, hidden_size, hidden_activation=nn.ReLU):
+        super(MLPQsaNet, self).__init__()
+        sizes = [obs_dim] + list(hidden_size) + [act_dim]
+        self.mlp = mlp(sizes, activation=nn.ReLU)
+
+    def forward(self, obs):
+        return self.mlp(obs)
+
 
 class MLPGaussianPerturbationActor(nn.Module):
     """
@@ -352,6 +371,12 @@ class VAE(nn.Module):
         a = F.relu(self.d2(a))
         return torch.tanh(self.d3(a)), self.d3(a)
 
+    def vae_loss(self, observations, actions):
+        recon, mean, std = self.forward(observations, actions)
+        recon_loss = nn.functional.mse_loss(recon, actions)
+        KL_loss = -0.5 * (1 + torch.log(std.pow(2)) - mean.pow(2) - std.pow(2)).mean()
+        loss_vae = recon_loss + 0.5 * KL_loss
+        return loss_vae
 
 class LagrangianPIDController:
     '''
